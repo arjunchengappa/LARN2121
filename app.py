@@ -22,7 +22,7 @@ def show_menu():
 	
 	helpmenu = tk.Menu(menubar, tearoff=0)
 	helpmenu.add_command(label='About App', command=about_app)
-	helpmenu.add_command(label='Get Help')
+	helpmenu.add_command(label='Get Help', command=help_app)
 	menubar.add_cascade(label="Help", menu=helpmenu)
 		
 	root.config(menu=menubar)
@@ -81,7 +81,7 @@ def show_timer():
 	
 def about_app():
 	about = tk.Toplevel()
-	root.iconbitmap('eye.ico')
+	about.iconbitmap('eye.ico')
 	
 	heading = tk.Label(about, text='About Us', font=("Arial", 14))
 	heading.grid(row=0, column=0, columnspan=2, pady=10)
@@ -107,6 +107,59 @@ def about_app():
 
 	copyright_ = tk.Label(about, text='©PES University, Bangalore', font=("Arial", 8))
 	copyright_.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+	
+	
+def help_app():
+	help_app = tk.Toplevel()
+	help_app.iconbitmap('eye.ico')
+	
+	heading = tk.Label(help_app, text='HELP', font=("Arial", 15))
+	heading.grid(row=0, column=0, pady=10)
+	
+	heading_1 = tk.Label(help_app, justify=tk.LEFT, text='Directions of Use', font=("Arial", 13))
+	heading_1.grid(row=1, column=0, pady=5)
+	
+	running = tk.Label(help_app, justify=tk.LEFT, text='Running the Lie Detector:', font=("Arial", 11))
+	running.grid(row=2, column=0, pady=2)
+	
+	running_ins = tk.Label(help_app, font=("Arial", 10), justify=tk.LEFT, text='- To Start the Lie Detector, click on "Start Detector".\n- A timer will start running. This timer shows the number\n  of seconds the detector has been running.\n- To stop the Lie Detector, click on "Stop Detector".\n- To view the results of the detector, click on "View Results".')
+	running_ins.grid(row=3, column=0, pady=1)
+	
+	status = tk.Label(help_app, justify=tk.LEFT, text='Viewing the sensor status:', font=("Arial", 11))
+	status.grid(row=4, column=0, pady=3)
+	
+	status_ins = tk.Label(help_app, font=("Arial", 10), justify=tk.LEFT, text='- To view the status of the camera, the microphone and other\n  sensors, click on the "File" on the Menu Bar.\n- Then click on "Check Status" in the dropdown menu.\n- This will open a new window displaying the status of all the\n  sensors.')
+	status_ins.grid(row=5, column=0, pady=1)
+	
+	feedback = tk.Label(help_app, font=("Arial", 10), justify=tk.LEFT, text='Please feel free to raise an issue to the development team or\nsuggest changes.')
+	feedback.grid(row=6, column=0, pady=3, padx=3)
+	
+	name_label = tk.Label(help_app, font=("Arial", 10), text='Enter Your Name and issue details')
+	name_label.grid(row=7, column=0, pady=2, padx=4, sticky=tk.W)
+	
+	name = tk.Entry(help_app, width=20, )
+	name.insert(0, 'Anonymous')
+	name.grid(row=8, column=0, pady=2, padx=4, sticky=tk.W)
+	
+	details = tk.Text(help_app, width=35, height=4)
+	details.insert(tk.INSERT, 'Raise an Issue or Suggest a change')
+	details.grid(row=9, column=0, pady=2, padx=4, sticky=tk.W)
+	
+	def submit_issue():
+		username = name.get()
+		issue = details.get("1.0", tk.END)
+		log = ",".join([username, issue])
+		logs = open('logs', 'a')
+		logs.write(log)
+		logs.close()
+		
+		
+	submit = tk.Button(help_app, text='Submit')
+	submit.grid(row=10, column=0, pady=2, padx=4, sticky=tk.W)
+	submit.configure(command=submit_issue)
+	
+	
+	
 	
 width, height = 300, 150
 cap = cv2.VideoCapture(0)
