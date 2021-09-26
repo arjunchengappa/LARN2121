@@ -2,7 +2,7 @@ import tkinter as tk
 import cv2
 import PIL.Image, PIL.ImageTk
 import VideoRecorder as vr
-from tkinter import filedialog
+from tkinter import PhotoImage, filedialog
 import socket
 import threading as th
 
@@ -27,6 +27,8 @@ class App:
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, width = 640, height = 480)
         self.canvas.grid(column=0, row=0, columnspan=4, padx=5, pady=5)
+        img = PhotoImage(file="img.png")
+        self.canvas.create_image(0,0,image=img, anchor=tk.NW)
 
         #video control section
         self.btn_start=tk.Button(window, text='Start', command=self.open_camera)
@@ -98,17 +100,18 @@ class App:
         #logging process to terminal
         print("Recording Stopped")
         print("Video Name: " + self.vid.video_name)
-        print("Video Length: %ss"%self.time)
         
         #displaying the name of the saved video
         self.filename = self.vid.video_name
         self.filename_label.configure(text=self.filename)
         self.vid.__del__()
+        
 
     def upload_video(self):
         #taking the input from the user
-        self.filename = filedialog.askopenfilename(initialdir = "../", title = "Select a File",filetypes = [("Video Files",".avi .mp4")])
-        self.filename_label.configure(text=self.filename[:30] + "...")
+        self.filename_upload = filedialog.askopenfilename(initialdir = "../", title = "Select a File",filetypes = [("Video Files",".avi .mp4")])
+        self.filename_label.configure(text=self.filename[:30])
+        self.filename = self.filename_upload
 
         #updating the button states
         self.btn_analyse["state"] = "normal"
