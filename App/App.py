@@ -7,6 +7,7 @@ import socket
 import tqdm
 import os
 import time
+import moviepy.editor as mpe
 
 class App:
 	def __init__(self, window, window_title="LARN Lie Detector", video_source=0):
@@ -72,6 +73,7 @@ class App:
 	def open_camera(self):
 		self.vid = vr.VideoCapture(self.video_source)
 		self.ok = True
+		vr.start_audio_recording(self.vid.video_name + '.wav')
 
 		#change button states
 		self.btn_start["state"] = "disabled"
@@ -90,9 +92,14 @@ class App:
 
 	def analyse(self):
 		self.btn_analyse["state"] = "disabled"
-		
-		if self.up_or_rec == 0:
-			pass
+		if self.up_or_rec == 1:
+			my_clip = mpe.VideoFileClip('temp.avi')
+			audio_background = mpe.AudioFileClip('temp.wav')
+			self.filename = 'final.avi'
+			final_clip = my_clip.set_audio(audio_background)
+			final_clip.write_videofile(self.filename ,fps=25, codec='libx264')
+			self.path = 'final.avi'
+			
 		self.result_label.configure(text="Calculating...")
 		SEPARATOR = "<SEPARATOR>"
 		BUFFER_SIZE = 1024 * 4 #4KB
@@ -138,9 +145,9 @@ class App:
 		if self.result == 'Truth':
 			color = 'green'
 		
-		time_taken = time.strftime("%Hh%Mm%Ss", time.gmtime(end-begin))
+		time_taken = time.strftime("%Hh %Mm %Ss", time.gmtime(end-begin))
 		self.result_label.configure(text=data, fg=color)
-		self.time_label(text=time_taken)
+		self.time_label.configure(text=time_taken)
 		self.post_analysis_clean()
 		
 	def post_analysis_clean(self):
@@ -150,6 +157,7 @@ class App:
 		
 
 	def close_camera(self):
+		vr.stop_audio_recording()
 		self.ok = False
 
 		#updating button states
@@ -163,11 +171,8 @@ class App:
 
 		#logging process to terminal
 		print("Recording Stopped")
-		print("Video Name: " + self.vid.video_name)
-		
 		#displaying the name of the saved video
-		self.filename = self.vid.video_name + '.avi'
-		self.path = self.filename
+		
 		self.filename_label.configure(text=self.filename)
 		self.up_or_rec = 1
 		self.vid.__del__()
@@ -175,11 +180,13 @@ class App:
 
 	def upload_video(self):
 		#taking the input from the user
+		self.result_label.configure(text="")
+		self.time_label.configure(text="-")
 		self.filename_upload = filedialog.askopenfilename(initialdir = "../", title = "Select a File",filetypes = [("Video Files",".avi .mp4")])
 		self.path = self.filename_upload
 		self.filename = os.path.basename(self.path)
 		self.filename_label.configure(text=self.filename[:30])
-		self.up_or_rec = -1
+		self.up_or_rec = 0
 
 		#updating the button states
 		self.btn_analyse["state"] = "normal"
