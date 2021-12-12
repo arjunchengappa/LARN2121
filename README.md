@@ -9,7 +9,7 @@ Instructions
   ii.   To stop recording click `Stop`    
   iii.  To upload a video click `Upload` and select the required file    
   iv.   To analyse the video click `Analyse`    
-  v.    Wait till the video has been completly analysed to get the result.    
+  v.    Wait till the video has been completely analysed to get the result.    
  
  NOTE: 
  The application might go into a `Not Responding` state while the analysis is running. 
